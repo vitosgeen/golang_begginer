@@ -8,20 +8,39 @@ import (
 	"strconv"
 )
 
-type Posts []struct {
-	Id int `json:"id"`
-}
-
-type Post struct {
-	UserID int    `json:"userId"`
-	ID     int    `json:"id"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
-}
-
-const urlPosts = "https://jsonplaceholder.typicode.com/posts"
 const urlComments = "https://jsonplaceholder.typicode.com/comments"
+const urlPosts = "https://jsonplaceholder.typicode.com/posts"
 
+func GetCommentsByPostId(id int) *[]Comment {
+	url := urlComments + "?postId=" + strconv.Itoa(id)
+	commentsByte := getExternalDataByteByUrl(url)
+	comments := &[]Comment{}
+	errUnM := json.Unmarshal(commentsByte, &comments)
+	if errUnM != nil {
+		log.Println(errUnM)
+	}
+	return comments
+}
+func GetPostsByUserId(id int) *[]Post {
+	url := urlPosts + "?userId=" + strconv.Itoa(id)
+	postsByte := getExternalDataByteByUrl(url)
+	posts := &[]Post{}
+	errUnM := json.Unmarshal(postsByte, &posts)
+	if errUnM != nil {
+		log.Println(errUnM)
+	}
+	return posts
+}
+func GetPostsIdByUserId(id int) *Posts {
+	url := urlPosts + "?userId=" + strconv.Itoa(id)
+	postsByte := getExternalDataByteByUrl(url)
+	posts := &Posts{}
+	errUnM := json.Unmarshal(postsByte, &posts)
+	if errUnM != nil {
+		log.Println(errUnM)
+	}
+	return posts
+}
 func GetPostsId() *Posts {
 	postsByte := getExternalDataByteByUrl(urlPosts)
 	posts := &Posts{}
@@ -55,26 +74,4 @@ func getExternalDataByteByUrl(url string) []byte {
 		log.Fatal(err)
 	}
 	return body
-}
-
-func GetPostsIdByUserId(userId int) *Posts {
-	url := urlPosts + "?userId=" + strconv.Itoa(userId)
-	postsByte := getExternalDataByteByUrl(url)
-	posts := &Posts{}
-	errUnM := json.Unmarshal(postsByte, &posts)
-	if errUnM != nil {
-		log.Println(errUnM)
-	}
-	return posts
-}
-
-func GetCommentsPostByPostId(postId int) *Posts {
-	url := urlComments + "?postId=" + strconv.Itoa(postId)
-	postsByte := getExternalDataByteByUrl(url)
-	posts := &Posts{}
-	errUnM := json.Unmarshal(postsByte, &posts)
-	if errUnM != nil {
-		log.Println(errUnM)
-	}
-	return posts
 }
